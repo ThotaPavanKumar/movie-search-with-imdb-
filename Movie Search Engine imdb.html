@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Search Engine 3</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <style>
+        body {
+            background-color: #19232e;
+         }         
+        #input_details{
+            margin-bottom: 6%;
+        }
+        #container {
+            display: grid;
+            gap: 7%;
+            grid-template-columns: 30% 10%;
+        }
+        #name {
+            margin-left: 10%;
+            width: 70%;
+            height: 25px;
+            position: fixed;            
+            /* border-top-style: hidden;
+            border-right-style: hidden;
+            border-left-style: hidden;
+            border-bottom-style: groove; */
+        }
+        #name:focus {
+            outline: none;
+        }
+        h1 {
+            text-align: center;
+            color: rgb(219, 205, 10);
+        }
+        button {
+            position: fixed;
+            right: 257px;
+            border : none;
+        }
+        #tag {
+            color: red;      
+        }
+
+    </style>
+    
+</head>
+<body>
+    
+        <h1>Movie Search Engine</h1>
+        <div id="input_details">
+            <input type="text" id="name" placeholder="Enter Movie Name"/>
+            <!-- <button onclick="movieSearch()">Search</button> -->
+            <button onclick="movieSearch()"><i class="material-icons">search</i></button>
+        </div>
+        
+        <div id="container"></div>
+
+
+</body>
+
+<script>
+
+// OMDb API: http://www.omdbapi.com/?i=tt3896198&apikey=cf72acbd
+
+
+let container = document.getElementById("container");
+
+async function movieSearch() {
+
+let movie_name = document.getElementById("name").value;
+
+let res = await fetch(`http://www.omdbapi.com/?t=${movie_name}&&apikey=cf72acbd`);
+
+let data = await res.json();
+
+console.log("data: ",data); 
+
+showMovieDetails(data);
+}
+
+function showMovieDetails(movie_details) {
+    // console.log(movie_details.Response);
+
+    if(movie_details.Response != 'False') {
+
+    container.innerHTML = null;
+
+    let div = document.createElement("div");
+    let div1 = document.createElement("div");
+
+    let poster = document.createElement("img");
+    poster.src= movie_details.Poster;
+
+    let title = document.createElement("p");
+    title.innerHTML = "Title : " + " " + movie_details.Title;
+
+    let plot = document.createElement("p");
+    plot.innerHTML = "Plot : " + " " + movie_details.Plot;
+
+    let year = document.createElement("p");
+    year.innerHTML = "Year :" + " " + movie_details.Year;
+
+    let actors = document.createElement("p");
+    actors.innerHTML = "Actors :" + " " + movie_details.Actors;
+
+    let director = document.createElement("p");
+    director.innerHTML = "Director :" + " " + movie_details.Director;
+
+    let genre = document.createElement("p");
+    genre.innerHTML = "Genre :" + " " + movie_details.Genre;
+
+    let language = document.createElement("p");
+    language.innerHTML = "Language :" + " " + movie_details.Language;
+
+    let rating = document.createElement("div");
+    
+    if(movie_details.imdbRating > 8.5) {
+        console.log(movie_details.imdbRating);
+        let tag = document.createElement("h2");
+        tag.setAttribute("id","tag");
+        tag.innerHTML = "Recommended";
+        // tag.style.color = "red";
+        // rating.innerHTML = "imdbRating :" + " " + movie_details.imdbRating + "" + tag.innerHTML;
+        rating.append(movie_details.imdbRating,tag);
+        rating.style.fontWeight = "800";
+    } else {
+        rating.innerHTML = "imdbRating :" + " " + movie_details.imdbRating;
+    }
+    
+
+    div.append(title,rating,plot,actors,year,director,genre,language);
+    div.style.height = "440px";
+    div.style.width = "400px";
+    div.style.color = "indigo";
+    console.log(div);
+
+    div1.append(poster);
+    div1.style.marginLeft = "5%";
+
+    container.append(div1,div);
+    container.style.border = "solid green";
+    container.style.backgroundColor = "grey";
+    container.style.borderRadius = "50px";
+    container.style.padding = "1%";
+
+
+} else {
+    container.innerHTML = null; 
+
+    let div_err = document.createElement("div");
+    div_err.style.height = "70%";
+    div_err.style.width = "95%";
+    div_err.style.backgroundColor = "#e4e4e4";
+    div_err.style.borderRadius = "6%";
+    div_err.style.margin = "15% 0px 15% 120%";
+
+    let error = document.createElement("p");
+    error.innerHTML = "Error";
+    error.style.color = "black";
+    error.style.textAlign = "center";
+    error.style.fontSize = "28px";
+    error.style.fontWeight = "800";
+
+    let p1 = document.createElement("p");
+    p1.innerHTML = "This title is not available to watch";
+    p1.style.textAlign = "center";
+    p1.style.fontSize = "26px";
+
+    let p2 = document.createElement("p");
+    p2.innerHTML = "instantly. Please try another title.";
+    p2.style.textAlign = "center";
+    p2.style.fontSize = "26px";
+    p2.style.marginTop = "-20px";
+
+    let p3 = document.createElement("p");
+    p3.innerHTML = "OK";
+    p3.style.color = "#3794f8";
+    p3.style.marginTop = "10%";
+    p3.style.textAlign = "center";
+    p3.style.fontSize = "28px";
+
+    div_err.append(error,p1,p2,p3);
+
+    container.append(div_err);
+}
+}
+
+</script>
+</html>
